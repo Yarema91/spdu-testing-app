@@ -2,19 +2,38 @@ import React, { useState } from 'react';
 
 import './main.css';
 import { Message } from './message/message';
+import { INITIAL_MESSAGES } from './constants';
+import { getRandomMessage } from './utils/getRandomMessage';
 
-export const INITIAL_MESSAGES = [
-    { text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', isCurrentUser: true },
-    { text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', isCurrentUser: false },
-    { text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', isCurrentUser: true }
-];
+
+// export const INITIAL_MESSAGES = [
+//     { text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', isCurrentUser: true },
+//     { text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', isCurrentUser: false },
+//     { text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', isCurrentUser: true }
+// ];
 
 export const Main = () => {
     const [messages, setMessages] = useState(INITIAL_MESSAGES);
     const [currentMessage, setCurrentMessage] = useState('');
 
+    const onMessageReply = () => {
+        setTimeout(() => (
+            setMessages(prevState => ([
+                ...prevState, getRandomMessage()
+            ]))
+        ), 1000);
+    };
+
     const onTextAreaChange = ({ target: { value } }) => {
         setCurrentMessage(value);
+    };
+
+    const onButtonClick = () => {
+        if (currentMessage.trim()) {
+            setMessages([...messages, { text: currentMessage, isCurrentUser: true }]);
+            setCurrentMessage('');
+            onMessageReply();
+        }
     };
 
     return (
@@ -28,7 +47,7 @@ export const Main = () => {
                 <textarea className="main__textarea" onChange={onTextAreaChange} value={currentMessage} />
             </div>
             <div className="main__plate">
-                <button className="main__button">Send message</button>
+                <button className="main__button" onClick={onButtonClick}>Send message</button>
             </div>
         </div>
     )
